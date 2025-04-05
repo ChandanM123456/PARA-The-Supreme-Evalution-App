@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Health Description</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Health Description & Analysis</h2>
+    <div id="resultBox"></div>
+    <br>
+    <button onclick="startChallenge()">💪 Take The 41-Day Challenge</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const physical = JSON.parse(localStorage.getItem(user.email + "_physical"));
+    const mental = JSON.parse(localStorage.getItem(user.email + "_mental"));
+
+    const resultBox = document.getElementById("resultBox");
+    let result = "";
+
+    if (!physical) {
+      resultBox.innerHTML = "<p>Physical health data not found.</p>";
+    } else {
+      const bpVal = parseInt(physical.bp.split("/")[0]);
+      const sugarVal = parseInt(physical.sugar);
+      const screenTime = parseInt(physical.other?.screenTime || "0");
+      const walkHabit = physical.other?.includes("walk") ? "yes" : "no";
+
+      result += "<ul>";
+
+      if (bpVal < 80) {
+        result += "<li>⚠️ Low BP detected - Monitor regularly.</li>";
+      } else if (bpVal > 120) {
+        result += "<li>⚠️ High BP - Risk of heart attack.</li>";
+      } else {
+        result += "<li>✅ Blood Pressure is Normal.</li>";
+      }
+
+      if (sugarVal > 200) {
+        result += "<li>⚠️ High Sugar - Risk of kidney issues.</li>";
+      } else {
+        result += "<li>✅ Sugar Level is Normal.</li>";
+      }
+
+      if (screenTime > 8) {
+        result += "<li>⚠️ High screen time - May lead to eye strain or fatigue.</li>";
+      }
+
+      if (walkHabit === "no") {
+        result += "<li>⚠️ Low activity level - Risk of obesity or related issues.</li>";
+      }
+
+      result += "</ul>";
+
+      resultBox.innerHTML = result;
+    }
+
+    function startChallenge() {
+      alert("Get ready! You're now enrolled in the 41-Day Challenge! 🎯");
+      window.location.href = "challenge.html"; // You can design this page next!
+    }
+  </script>
+</body>
+</html>

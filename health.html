@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Health Details</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Health Details</h2>
+    <button onclick="goToPhysical()">🧠 Physical Health</button><br><br>
+    <button onclick="goToMental()">🧘‍♂️ Mental Health</button><br><br>
+    <button onclick="goBack()">⬅️ Back to Summary</button>
+  </div>
+
+  <script>
+    function goToPhysical() {
+      window.location.href = "physical-health.html";
+    }
+
+    function goToMental() {
+      window.location.href = "mental-health.html";
+    }
+
+    function goBack() {
+      window.location.href = "summary.html";
+    }
+  </script>
+</body>
+</html>

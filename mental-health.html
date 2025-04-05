@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mental Health</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Mental Health Details</h2>
+    <form id="mentalForm">
+      <label>Have you suffered depression before?</label><br>
+      <select id="pastDepression">
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select><br>
+
+      <label>Are you currently experiencing mental health issues?</label><br>
+      <select id="currentMental">
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select><br>
+
+      <textarea id="mentalDesc" placeholder="Describe your experience (if any)..."></textarea><br>
+      <textarea id="coping" placeholder="How do you cope or what helps you?"></textarea><br>
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    document.getElementById("mentalForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const mentalHealth = {
+        pastDepression: document.getElementById("pastDepression").value,
+        currentMental: document.getElementById("currentMental").value,
+        mentalDesc: document.getElementById("mentalDesc").value,
+        coping: document.getElementById("coping").value
+      };
+
+      localStorage.setItem(user.email + "_mental", JSON.stringify(mentalHealth));
+      alert("Mental health data saved!");
+      window.location.href = "view-health.html";
+
+    });
+  </script>
+</body>
+</html>

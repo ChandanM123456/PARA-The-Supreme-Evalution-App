@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Saved Health Details</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Saved Health Details</h2>
+    <div id="healthData"></div>
+    <br>
+    <button onclick="analyzeHealth()">📊 Process</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const container = document.getElementById("healthData");
+
+    const physical = JSON.parse(localStorage.getItem(user.email + "_physical"));
+    const mental = JSON.parse(localStorage.getItem(user.email + "_mental"));
+
+    if (!physical && !mental) {
+      container.innerHTML = "<p>No health details saved yet.</p>";
+    } else {
+      let output = "";
+
+      if (physical) {
+        output += `
+          <h3>Physical Health</h3>
+          <p><strong>Blood Pressure:</strong> ${physical.bp}</p>
+          <p><strong>Sugar Level:</strong> ${physical.sugar}</p>
+          <p><strong>Heart Rate:</strong> ${physical.heartRate}</p>
+          <p><strong>Previous Injuries:</strong> ${physical.injuries}</p>
+          <p><strong>Smoking Habit:</strong> ${physical.smoke}</p>
+          <p><strong>Drinking Habit:</strong> ${physical.drink}</p>
+          <p><strong>Other Info:</strong> ${physical.other}</p>
+        `;
+      }
+
+      if (mental) {
+        output += `
+          <h3>Mental Health</h3>
+          <p><strong>Past Depression:</strong> ${mental.pastDepression}</p>
+          <p><strong>Current Mental Health Issues:</strong> ${mental.currentMental}</p>
+          <p><strong>Experience:</strong> ${mental.mentalDesc}</p>
+          <p><strong>Coping Strategies:</strong> ${mental.coping}</p>
+        `;
+      }
+
+      container.innerHTML = output;
+    }
+
+    function analyzeHealth() {
+      window.location.href = "health-description.html";
+    }
+  </script>
+</body>
+</html>

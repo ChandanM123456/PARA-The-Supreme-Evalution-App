@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Physical Health</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Physical Health Details</h2>
+    <form id="physicalForm">
+      <input type="text" id="bp" placeholder="Blood Pressure"><br>
+      <input type="text" id="sugar" placeholder="Sugar Level"><br>
+      <input type="text" id="heartRate" placeholder="Heart Rate"><br>
+      <textarea id="injuries" placeholder="Previous injuries or operations"></textarea><br>
+      <select id="smoke">
+        <option value="">Smoking Habit</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select><br>
+      <select id="drink">
+        <option value="">Drinking Habit</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select><br>
+      <textarea id="other" placeholder="Other physical health info..."></textarea><br>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    document.getElementById("physicalForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const physicalHealth = {
+        bp: document.getElementById("bp").value,
+        sugar: document.getElementById("sugar").value,
+        heartRate: document.getElementById("heartRate").value,
+        injuries: document.getElementById("injuries").value,
+        smoke: document.getElementById("smoke").value,
+        drink: document.getElementById("drink").value,
+        other: document.getElementById("other").value
+      };
+
+      localStorage.setItem(user.email + "_physical", JSON.stringify(physicalHealth));
+      alert("Physical health data saved!");
+      window.location.href = "view-health.html";
+
+    });
+  </script>
+</body>
+</html>

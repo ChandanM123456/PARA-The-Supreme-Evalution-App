@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>41-Day Challenge</title>
+  <link rel="stylesheet" href="auth-style.css">
+  <style>
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .day {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .completed {
+      background-color: #d4edda;
+    }
+    .missed {
+      background-color: #f8d7da;
+    }
+    .current {
+      background-color: #ffeeba;
+    }
+    .badge {
+      padding: 10px;
+      background: gold;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    .routine-box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #f9f9f9;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #eee;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .progress-bar-fill {
+      height: 20px;
+      background-color: #4caf50;
+      border-radius: 10px;
+      text-align: center;
+      color: white;
+      line-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>🔥 41-Day Supreme Challenge</h2>
+    <p>Track your daily goals and unlock your potential!</p>
+
+    <div id="calendar" class="calendar"></div>
+
+    <div class="progress-bar"><div id="progressFill" class="progress-bar-fill">0%</div></div>
+
+    <div id="routineBox" class="routine-box"></div>
+    <div id="tipBox"></div>
+    <div id="badgeBox"></div>
+    <div id="quoteBox" style="margin-top: 20px;"></div>
+
+    <br>
+    <button onclick="goBack()">← Back</button>
+    <button onclick="moveToNextTask()">➡️ Move to Next Task</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const key = user.email + "_challengeProgress";
+    let progress = JSON.parse(localStorage.getItem(key)) || {};
+
+    const calendar = document.getElementById("calendar");
+    const tipBox = document.getElementById("tipBox");
+    const badgeBox = document.getElementById("badgeBox");
+    const routineBox = document.getElementById("routineBox");
+    const progressFill = document.getElementById("progressFill");
+    const quoteBox = document.getElementById("quoteBox");
+
+    const routines = [
+      "Day 1: 10 pushups, 5 mins meditation",
+      "Day 2: 15 squats, 10 mins yoga",
+      "Day 3: 10 jumping jacks, deep breathing",
+      "Day 4: Light jogging, gratitude journaling",
+      "Day 5: Plank hold 30 sec, 10 pushups",
+      "Day 6: 20 lunges, breathing meditation",
+      "Day 7: Rest and reflect",
+      "Day 8: 20 crunches, 5 mins journaling",
+      "Day 9: Full body stretch, 15 squats",
+      "Day 10: Jump rope 2 mins, mindfulness walk",
+      "Day 11: 10 burpees, 10 mins breathing",
+      "Day 12: 15 pushups, gratitude writing",
+      "Day 13: 30 sec plank, light yoga",
+      "Day 14: Dance or walk 20 mins",
+      "Day 15: 25 squats, smile challenge",
+      "Day 16: Calf raises, focus breath",
+      "Day 17: Arm circles, positive affirmations",
+      "Day 18: Jog in place, 10 pushups",
+      "Day 19: Morning walk, 3 things grateful for",
+      "Day 20: Wall sit, tea meditation",
+      "Day 21: Mid-point reflection and journal",
+      "Day 22: 20 lunges, 5 deep breaths",
+      "Day 23: Chair pose, music relaxation",
+      "Day 24: Side stretches, 10 pushups",
+      "Day 25: 1-min jump rope, meditation",
+      "Day 26: Sun salutations, silent hour",
+      "Day 27: 20 crunches, full body scan",
+      "Day 28: Walking meditation",
+      "Day 29: High knees 30 sec, write dreams",
+      "Day 30: Skipping 1 min, breathing break",
+      "Day 31: Half hour outdoor time",
+      "Day 32: Core strength, smile reflection",
+      "Day 33: Laugh therapy, neck rolls",
+      "Day 34: Plank challenge, talk to friend",
+      "Day 35: Balance pose, hobby time",
+      "Day 36: Cardio blast, mirror affirmation",
+      "Day 37: Choose your fav from past week",
+      "Day 38: Quiet walk, observe sounds",
+      "Day 39: 20 lunges, dance break",
+      "Day 40: Gratitude journal, deep stretch",
+      "Day 41: Reflection & celebration day 🎉"
+    ];
+
+    const quotes = [
+      "Believe in yourself!",
+      "One step at a time.",
+      "Progress, not perfection.",
+      "Push harder than yesterday!",
+      "You are your only limit.",
+      "Stay consistent and committed.",
+      "Small steps = Big changes."
+    ];
+
+    function generateCalendar() {
+      calendar.innerHTML = '';
+      for (let i = 1; i <= 41; i++) {
+        const day = document.createElement("div");
+        day.className = "day";
+        day.textContent = "Day " + i;
+
+        if (progress[i] === "completed") {
+          day.classList.add("completed");
+        } else if (progress[i] === "missed") {
+          day.classList.add("missed");
+        } else if (i === getCurrentDay()) {
+          day.classList.add("current");
+        }
+
+        day.onclick = () => toggleDay(i);
+        calendar.appendChild(day);
+      }
+      giveTips();
+      awardBadges();
+      updateProgressBar();
+      showRandomQuote();
+    }
+
+    function getCurrentDay() {
+      const startKey = user.email + "_challengeStart";
+      let startDate = localStorage.getItem(startKey);
+      if (!startDate) {
+        startDate = new Date().toISOString().split("T")[0];
+        localStorage.setItem(startKey, startDate);
+      }
+      const diff = Math.floor((new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24));
+      return diff + 1;
+    }
+
+    function toggleDay(day) {
+      progress[day] = progress[day] === "completed" ? "missed" : "completed";
+      localStorage.setItem(key, JSON.stringify(progress));
+      showRoutine(day);
+      generateCalendar();
+    }
+
+    function showRoutine(day) {
+      const routine = routines[day - 1] || `Day ${day}: Keep going! Choose your favorite workout today.`;
+      routineBox.innerHTML = `<strong>Today's Routine:</strong> <p>${routine}</p>`;
+    }
+
+    function giveTips() {
+      const missed = Object.values(progress).filter(d => d === "missed").length;
+      let tip = "";
+      if (missed === 0) {
+        tip = "🏆 You're on fire! Keep going!";
+      } else if (missed < 3) {
+        tip = "🔁 It's okay to slip! Restart strong today!";
+      } else {
+        tip = "📈 Try setting reminders or rewarding yourself!";
+      }
+      tipBox.innerHTML = `<p><strong>Tip:</strong> ${tip}</p>`;
+    }
+
+    function awardBadges() {
+      const completedDays = Object.values(progress).filter(d => d === "completed").length;
+      let badge = "";
+      if (completedDays >= 10 && completedDays < 20) {
+        badge = "🥉 Bronze Streak Badge";
+      } else if (completedDays >= 20 && completedDays < 30) {
+        badge = "🥈 Silver Streak Badge";
+      } else if (completedDays >= 30) {
+        badge = "🥇 Gold Champion Badge";
+      }
+      badgeBox.innerHTML = badge ? `<div class="badge">${badge}</div>` : "";
+    }
+
+    function updateProgressBar() {
+      const completed = Object.values(progress).filter(d => d === "completed").length;
+      const percentage = Math.round((completed / 41) * 100);
+      progressFill.style.width = percentage + "%";
+      progressFill.textContent = percentage + "%";
+    }
+
+    function showRandomQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteBox.innerHTML = `<strong>Motivation:</strong> "${quote}"`;
+    }
+
+    function moveToNextTask() {
+      window.location.href = "health-summary-compare.html";
+    }
+
+    function goBack() {
+      window.location.href = "health-description.html";
+    }
+
+    generateCalendar();
+  </script>
+</body>
+</html>

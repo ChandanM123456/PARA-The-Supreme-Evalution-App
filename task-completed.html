@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Completed</title>
+  <link rel="stylesheet" href="auth-style.css">
+  <style>
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f2f2f2;
+      text-align: center;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      background-color: #007BFF;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎯 Physical Health Entry Saved</h2>
+    <p>You've completed the first task of the 41-Day Challenge by entering your physical health details!</p>
+    <button onclick="goBack()">🔙 Health Analysis</button>
+    <button onclick="nextTask()">🧠 Continue with Mental Wellbeing</button>
+    <button onclick="compareHealth()">📊 Move to Next Task</button>
+  </div>
+
+  <script>
+    function goBack() {
+      window.location.href = "view-health.html";
+    }
+
+    function nextTask() {
+      window.location.href = "mental-health.html";
+    }
+
+    function compareHealth() {
+      const previous = JSON.parse(localStorage.getItem("initialHealth"));
+      const current = JSON.parse(localStorage.getItem("finalHealth"));
+
+      if (!previous || !current) {
+        alert("Health data missing. Please ensure both initial and final data are saved.");
+        return;
+      }
+
+      let message = "✅ Comparison Results:\n";
+      let improved = false;
+
+      for (const key in previous) {
+        const prev = parseFloat(previous[key]);
+        const curr = parseFloat(current[key]);
+        if (!isNaN(prev) && !isNaN(curr)) {
+          const variation = curr - prev;
+          message += `\n${key}: ${prev} → ${curr} (${variation > 0 ? '+' : ''}${variation})`;
+          if (key === "bp" || key === "sugar" || key === "heartRate") {
+            if ((key === "bp" && curr <= 120 && curr > 80 && prev > 120) ||
+                (key === "sugar" && curr < 200 && prev >= 200) ||
+                (key === "heartRate" && curr <= 100 && prev > 100)) {
+              improved = true;
+            }
+          }
+        }
+      }
+
+      message += "\n\n🎉 After completing the 41-Day Challenge, your health has ";
+      message += improved ? "improved significantly! Keep up the great work!" : "remained consistent. Stay motivated and continue your progress!";
+
+      alert(message);
+    }
+  </script>
+</body>
+</html>

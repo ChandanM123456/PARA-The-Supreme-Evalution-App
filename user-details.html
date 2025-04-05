@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Details | PARA</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>User Profile Details</h2>
+    
+    <p><strong>Welcome:</strong> <span id="displayName"></span></p>
+    <p><strong>Email:</strong> <span id="displayEmail"></span></p>
+
+    <form id="detailsForm">
+      <input type="number" id="age" placeholder="Enter your age" required><br>
+
+      <label>Gender:</label><br>
+      <select id="gender" required>
+        <option value="">Select</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Others</option>
+      </select><br><br>
+
+      <label>Profession:</label><br>
+      <input list="professions" id="profession" placeholder="Type or select your profession" required>
+      <datalist id="professions">
+        <option value="Teacher">
+        <option value="Farmer">
+        <option value="Student">
+        <option value="Pilot">
+        <option value="Software Engineer">
+        <option value="CEO">
+        <option value="Driver">
+        <option value="Doctor">
+        <option value="Artist">
+        <option value="Businessperson">
+      </datalist><br><br>
+
+      <label>Marital Status:</label><br>
+      <select id="maritalStatus" required>
+        <option value="">Select</option>
+        <option>Married</option>
+        <option>Unmarried</option>
+      </select><br><br>
+
+      <button type="submit">Save Profile</button>
+    </form>
+
+    <p id="saveMsg"></p>
+    <br>
+    <button onclick="logout()">Logout</button><br>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const saveMsg = document.getElementById("saveMsg");
+
+    if (user) {
+      document.getElementById("displayName").textContent = user.name;
+      document.getElementById("displayEmail").textContent = user.email;
+    } else {
+      alert("No user logged in!");
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("detailsForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const details = {
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        profession: document.getElementById("profession").value,
+        maritalStatus: document.getElementById("maritalStatus").value
+      };
+
+      localStorage.setItem(user.email + "_details", JSON.stringify(details));
+      saveMsg.textContent = "Profile saved successfully!";
+      setTimeout(() => window.location.href = "summary.html", 1000); // Move to next page
+    });
+
+  </script>
+</body>
+</html>

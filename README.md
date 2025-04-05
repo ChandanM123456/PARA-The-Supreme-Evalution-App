@@ -12,5 +12,4 @@ Technologically, PARA uses HTML, CSS, and JavaScript for the front end, while th
 
 Finally, PARA is built to scale, with offline functionality for essential content and the potential to connect with real-life or AI-based coaches. Future plans include wearable integration, cloud syncing, and emotional intelligence features.
 
-Let me know if you’d like this same summary in Kannada or want it styled for your project documentation or pitch deck!
 
